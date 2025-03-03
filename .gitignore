@@ -1,0 +1,12 @@
+.appmodconfig
+.ipynb_checkpoints
+.vscoded
+
+# Ignore multimedia files
+*.mp4
+*.jpg
+*.jpeg
+*.png
+
+# Ignore JSON files
+*.json
