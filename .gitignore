@@ -2,6 +2,8 @@
 .ipynb_checkpoints
 .vscoded
 
+training/samurai
+
 # Ignore multimedia files
 *.mp4
 *.jpg
