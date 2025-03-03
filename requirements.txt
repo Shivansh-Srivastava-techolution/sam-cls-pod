@@ -1,0 +1,7 @@
+flask
+scikit-learn
+paddleocr==2.7.0.3
+paddlepaddle-gpu==2.5.2
+coloroma
+halo
+google-cloud-storage
