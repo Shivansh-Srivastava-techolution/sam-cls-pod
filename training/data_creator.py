@@ -78,7 +78,7 @@ def compute_features(bbox_sequence):
     
     return features
 
-def generate_training_data(video_path, class_name):
+def generate_training_data(dataset_path, video_path, class_name):
     cap = cv2.VideoCapture(video_path)
 
     # Get video dimensions
@@ -109,7 +109,7 @@ def generate_training_data(video_path, class_name):
     # Track bounding boxes across frames
     sam_save_path = os.path.join("sam2_results", f"{uuid.uuid4()}.mp4")
     bbox_sequence = process_video(video_path, samurai_bboxes, model_path="sam2/checkpoints/sam2.1_hiera_large.pt", 
-                 save_video=True, output_path=sam_save_path)
+                 save_video=False, output_path=sam_save_path)
 
     # Compute features for LSTM model
     features = compute_features(bbox_sequence)
@@ -122,7 +122,7 @@ def generate_training_data(video_path, class_name):
 
     # Save to JSON file
     json_path = os.path.basename(video_path).replace('.mp4', '.json')
-    output_path = os.path.join(VIDEOS_DIR, f'training_data_{class_name}', json_path)
+    output_path = os.path.join(dataset_path, 'json_data', json_path)
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     with open(output_path, 'w') as json_file:
@@ -132,15 +132,15 @@ def generate_training_data(video_path, class_name):
     cap.release()
     return output_path
 
-def main():
-    class_names = ['invalid']
+def main(dataset_path):
+    class_names = os.listdir(dataset_path)
     for clss in class_names:
-        video_dir = os.path.join(VIDEOS_DIR, f'{clss}_videos')
+        video_dir = os.path.join(dataset_path, clss)
         video_paths = [os.path.join(video_dir, file) for file in os.listdir(video_dir) if file.endswith('.mp4')]
         
         for video_path in video_paths:
             try:
-                generate_training_data(video_path, class_name=clss)
+                generate_training_data(dataset_path, video_path, class_name=clss)
             except Exception as e:
                 traceback.print_exc()
                 print(f"Error processing video {video_path}: {e}")

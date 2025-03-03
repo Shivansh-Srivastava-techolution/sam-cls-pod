@@ -53,7 +53,8 @@ class training_function():
         download_files(self.test_csv_path, self.test_dataset_path)
 
         # creating samurai dataset
-        
+        data_creator.main(self.dataset_path)
+        data_creator.main(self.test_dataset_path)
 
         # If retrain == True than set the weight path and freeze some layers
         if self.retrain:
