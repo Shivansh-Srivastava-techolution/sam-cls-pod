@@ -6,7 +6,8 @@ import torch
 import gc
 import sys
 
-sys.path.append("./sam2")
+sys.path.append("training/samurai/sam2")
+
 from sam2.build_sam import build_sam2_video_predictor
 
 def load_prompt(coords):
