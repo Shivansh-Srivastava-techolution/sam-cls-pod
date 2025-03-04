@@ -27,8 +27,8 @@ class training_function():
         self.dataset_path = os.path.join(
             Config.DATA_PATH, self.model_details['_id'], "train_data")
         # This is where the weights of the trained model would be stored
-        self.models_path = os.path.join(
-            Config.MODELS_PATH, self.model_details['_id'])
+        self.model_save_path = os.path.join(
+            Config.MODELS_PATH, self.model_details['_id'], "cnn1d_model.pth")
         # Path to csv file which contains info about the training data
         self.train_csv_path = os.path.join(
             Config.DATA_PATH, self.model_details['_id'], self.model_details['resourcesFileName'])
@@ -55,25 +55,16 @@ class training_function():
         data_creator.main(self.dataset_path)
         data_creator.main(self.test_dataset_path)
 
-        # If retrain == True than set the weight path and freeze some layers
-        if self.retrain:
-            retrain_weight = os.path.join(
-                Config.MODELS_PATH, self.model_details['_id'], "checkpoint", 'modelDir')
-        else:
-            retrain_weight = None
-
         Config.MODEL_STATUS = "Training"
 
         print('Training started')
 
         # The call to start the training of the model should be made here #
         # train_dataset_path, test_dataset_path, models_path, model_details, train_csv_path, test_csv_path
-        new_model_name = train_model.main(train_dataset_path=self.dataset_path,
-                                  test_dataset_path=self.test_dataset_path,
-                                    models_path=self.models_path,
-                                    model_details=self.model_details,
-                                    train_csv_path = self.train_csv_path,
-                                    test_csv_path = self.test_csv_path)
+        train_model.main(train_dataset_path=self.dataset_path,
+                        test_dataset_path=self.test_dataset_path,
+                        model_details=self.model_details,
+                        model_save_path = self.model_save_path)
 
         print('Training Completed')
 
@@ -84,42 +75,7 @@ class training_function():
             'additionalfile': []
         }
         
-        # config_path = os.path.join(os.getcwd(), f'output/v3_en_mobile_{id_num}/config.yml')
-        
-        if os.path.exists(os.path.join(os.getcwd(), new_model_name)):
-            print("="*80)
-            print("Using best model")
-            print("="*80)
-            
-            # saved_model_path = os.path.join(os.getcwd(), f'output/v3_en_mobile_{id_num}/best_model')
-            saved_model_path = new_model_name
-            os.system(f"zip -r inference_model.zip {saved_model_path}/best_model {saved_model_path}/latest_checkpoint")
-            
-            files_to_send['parentfile'].append(os.path.join("inference_model.zip"))
-            
-            # for file in os.listdir(saved_model_path):
-            #     files_to_send['modelfile'].append(os.path.join(saved_model_path, file))
-                
-            rec_model_dir = new_model_name
-            
-        else:
-            print("="*80)
-            print("best model not found, creating a dummy file")
-            print("="*80)
-            
-            os.system(f"touch inference_model.zip")
-            
-            files_to_send['parentfile'].append(os.path.join("inference_model.zip"))
-            
-            # directory = [d for d in os.listdir(saved_model_path) if d.startswith('latest')]
-            # for file in directory:
-            #     files_to_send['modelfile'].append(os.path.join(saved_model_path, file))
-                
-            rec_model_dir = new_model_name
-            
-        # files_to_send['analyticfile'].append(config_path)
-
-        # files_to_send['parentfile'].append(os.path.join(self.models_path, "best_model.h5"))
+        files_to_send['parentfile'].append(self.model_save_path)
 
         # =============== Starting the test =============== #
 
