@@ -1,6 +1,6 @@
 .appmodconfig
 .ipynb_checkpoints
-.vscoded
+.vscode
 
 training/samurai
 

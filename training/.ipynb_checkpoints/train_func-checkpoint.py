@@ -1,7 +1,7 @@
 # Native Library Import
 import json
 import os
-import shutil
+# import data_creator
 import sys
 import traceback
 import pandas as pd
@@ -51,6 +51,10 @@ class training_function():
         # Downloading the data from the csv file for training
         download_files(self.train_csv_path, self.dataset_path)
         download_files(self.test_csv_path, self.test_dataset_path)
+
+        # creating samurai dataset
+        data_creator.main(self.dataset_path)
+        data_creator.main(self.test_dataset_path)
 
         # If retrain == True than set the weight path and freeze some layers
         if self.retrain:
