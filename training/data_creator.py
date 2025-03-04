@@ -122,7 +122,7 @@ def generate_training_data(dataset_path, video_path, class_name):
 
     # Save to JSON file
     json_path = os.path.basename(video_path).replace('.mp4', '.json')
-    output_path = os.path.join(dataset_path, 'json_data', json_path)
+    output_path = os.path.join(dataset_path, class_name, 'json_data', json_path)
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     with open(output_path, 'w') as json_file:
