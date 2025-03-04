@@ -108,7 +108,7 @@ def generate_training_data(dataset_path, video_path, class_name):
 
     # Track bounding boxes across frames
     sam_save_path = os.path.join("sam2_results", f"{uuid.uuid4()}.mp4")
-    bbox_sequence = process_video(video_path, samurai_bboxes, model_path="training/samurai/sam2/checkpoints/sam2.1_hiera_large.pt", 
+    _, bbox_sequence = process_video(video_path, samurai_bboxes, model_path="training/samurai/sam2/checkpoints/sam2.1_hiera_large.pt", 
                  save_video=False, output_path=sam_save_path)
 
     # Compute features for LSTM model
