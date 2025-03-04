@@ -5,7 +5,7 @@ import json
 import traceback
 import numpy as np
 from ultralytics import YOLO
-from samurai import process_video
+from training.samurai import process_video
 from utils.polygonHelper import PolygonHelper
 
 
@@ -108,7 +108,7 @@ def generate_training_data(dataset_path, video_path, class_name):
 
     # Track bounding boxes across frames
     sam_save_path = os.path.join("sam2_results", f"{uuid.uuid4()}.mp4")
-    bbox_sequence = process_video(video_path, samurai_bboxes, model_path="sam2/checkpoints/sam2.1_hiera_large.pt", 
+    bbox_sequence = process_video(video_path, samurai_bboxes, model_path="training/samurai/sam2/checkpoints/sam2.1_hiera_large.pt", 
                  save_video=False, output_path=sam_save_path)
 
     # Compute features for LSTM model
