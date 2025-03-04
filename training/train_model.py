@@ -507,7 +507,6 @@ def main(train_dataset_path, test_dataset_path, model_details, model_save_path):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
 
-
     # Initialize 1D CNN Model
     num_features = 9
     num_classes = len(clss)
@@ -546,6 +545,8 @@ def main(train_dataset_path, test_dataset_path, model_details, model_save_path):
     
     print(f"Best Test Accuracy: {best_accuracy:.4f}")
     print(f"Model saved to {model_save_path}")
+
+    return cls_map
 
 if __name__ == "__main__":
     main()

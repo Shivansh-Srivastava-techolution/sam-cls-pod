@@ -61,7 +61,7 @@ class training_function():
 
         # The call to start the training of the model should be made here #
         # train_dataset_path, test_dataset_path, models_path, model_details, train_csv_path, test_csv_path
-        train_model.main(train_dataset_path=self.dataset_path,
+        cls_map = train_model.main(train_dataset_path=self.dataset_path,
                         test_dataset_path=self.test_dataset_path,
                         model_details=self.model_details,
                         model_save_path = self.model_save_path)
@@ -103,16 +103,13 @@ class training_function():
                 print(Fore.RED + "The main() function present in the file training/test_model.py has to be updated based on developer requirements")
 
                 # The call to start the testing of the model should be made here
-                # The best performing model will be self.models_path/best_model.h5
 ########################################################################################################################
                 acc, confusion_matrix = test_model.main(test_csv_path=self.test_csv_path,
                                                           dataset_path=self.test_dataset_path,
                                                           output_file=output_file,
-                                                          model_details=self.model_details,
-                                                          saved_model_dir = rec_model_dir)
-                # acc,confustion_matrix = {},{}
-                # acc['Total'] = 0
-
+                                                          class_map = cls_map,
+                                                          model_save_path = self.model_save_path)
+            
                 test_detail['accuracy'] = acc['Total']
 
                 # Adding the test CSV
