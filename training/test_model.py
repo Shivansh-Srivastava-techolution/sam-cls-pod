@@ -102,6 +102,8 @@ def inference(json_path, cnn_model, device, class_map):
         predicted_idx = torch.argmax(outputs, dim=1).item()
 
     # Map to label
+    print("cls_amo")
+    print(class_map)
     print("Inference: ", predicted_idx, class_map.get(predicted_idx, "unknown"))
     return class_map.get(predicted_idx, "unknown")
 
