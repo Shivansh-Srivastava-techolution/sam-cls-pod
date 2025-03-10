@@ -497,6 +497,7 @@ def main(train_dataset_path, test_dataset_path, model_details, model_save_path):
     
     clss = os.listdir(train_dataset_path)
     cls_map = {v: k for k, v in enumerate(clss)}
+    clss_map = {k: v for k, v in enumerate(clss)}
 
     train_data, train_labels, test_data, test_labels = load_training_data(train_dataset_path, test_dataset_path, cls_map)
 
@@ -546,7 +547,7 @@ def main(train_dataset_path, test_dataset_path, model_details, model_save_path):
     print(f"Best Test Accuracy: {best_accuracy:.4f}")
     print(f"Model saved to {model_save_path}")
 
-    return cls_map
+    return clss_map
 
 if __name__ == "__main__":
     main()
