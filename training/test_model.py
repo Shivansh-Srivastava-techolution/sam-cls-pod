@@ -102,6 +102,7 @@ def inference(json_path, cnn_model, device, class_map):
         predicted_idx = torch.argmax(outputs, dim=1).item()
 
     # Map to label
+    print("Inference: ", predicted_idx, class_map.get(predicted_idx, "unknown"))
     return class_map.get(predicted_idx, "unknown")
 
 def main(test_csv_path, dataset_path, output_file, class_map, model_save_path=None):
@@ -160,7 +161,7 @@ def main(test_csv_path, dataset_path, output_file, class_map, model_save_path=No
 
         # If the hyperparameter is coming during training
         json_file = os.path.basename(gcs_filename).replace('.mp4', '.json')
-        json_path = os.path.join(dataset_path, actual_label, "json_data",json_file)
+        json_path = os.path.join(dataset_path, actual_label, "json_data", json_file)
 
         if not os.path.exists(json_path):
             print(json_path, "NOT FOUND")
