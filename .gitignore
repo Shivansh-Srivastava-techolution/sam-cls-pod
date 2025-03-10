@@ -12,3 +12,5 @@ training/samurai
 
 # Ignore JSON files
 *.json
+
+.DS_Store
