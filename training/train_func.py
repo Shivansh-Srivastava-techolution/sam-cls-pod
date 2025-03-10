@@ -79,7 +79,7 @@ class training_function():
         }
         
         files_to_send['parentfile'].append(self.model_save_path)
-        files_to_send['analyticfile'].append("cls_map.json")
+        files_to_send['additionalfile'].append("cls_map.json")
 
         # =============== Starting the test =============== #
 

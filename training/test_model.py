@@ -143,7 +143,7 @@ def main(test_csv_path, dataset_path, output_file, class_map, model_save_path=No
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    num_classes = os.listdir(dataset_path)
+    num_classes = len(os.listdir(dataset_path))
 
     # Create and load the CNN1DModel
     cnn_model = CNN1DModel(num_features=9, num_classes=num_classes)
