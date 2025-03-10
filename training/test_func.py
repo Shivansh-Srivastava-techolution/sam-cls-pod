@@ -11,7 +11,7 @@ from colorama import Fore, Style
 # Custom file Import
 from autoai_process import Config
 from training import test_model
-from autoai_process.auto_ai_download import download_files, csv_to_json_convert
+from autoai_process.auto_ai_download import download_files
 from autoai_process.builtin_func import auto_ai_connect, testCollection
 from autoai_process.gcp_train_utils import data_preprocessing
 

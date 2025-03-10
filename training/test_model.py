@@ -122,7 +122,7 @@ def main(test_csv_path, dataset_path, output_file, class_map, model_save_path=No
             print(json_path, "NOT FOUND")
             continue
 
-        predicted_label = inference(json_path, cnn_model, class_map) 
+        predicted_label = inference(json_path, cnn_model, device, class_map) 
         score = 100
         
         if predicted_label == 'unknown':
