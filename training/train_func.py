@@ -65,6 +65,9 @@ class training_function():
                         test_dataset_path=self.test_dataset_path,
                         model_details=self.model_details,
                         model_save_path = self.model_save_path)
+        
+        with open("cls_map.json", 'w') as f:
+            json.dump(cls_map, f)
 
         print('Training Completed')
 
@@ -76,6 +79,7 @@ class training_function():
         }
         
         files_to_send['parentfile'].append(self.model_save_path)
+        files_to_send['analyticfile'].append("cls_map.json")
 
         # =============== Starting the test =============== #
 

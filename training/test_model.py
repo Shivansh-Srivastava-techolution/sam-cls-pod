@@ -6,13 +6,57 @@ current_directory = os.getcwd()
 print(sys.path)
 
 import pandas as pd
+import json
 
 import torch
-import json
-# from ultralytics import YOLO
-import os
+import torch.nn as nn
 
-class CNN1DModel(torch.nn.Module):
+class CNN1DModel(nn.Module):
+    """
+    A simple 1D CNN that processes sequences of shape:
+      (batch, seq_len, num_features)
+    
+    We'll reshape to (batch, num_features, seq_len) so that 'num_features' acts like "channels",
+    and 'seq_len' is the time dimension for the 1D convolution.
+    
+    Architecture Overview:
+      - Conv1d -> ReLU
+      - Conv1d -> ReLU
+      - AdaptiveMaxPool1d(1) to reduce the time dimension to 1
+      - Fully-connected layer to output classification
+    """
+    def __init__(self, num_features=9, num_classes=2):
+        super(CNN1DModel, self).__init__()
+        
+        # We treat 'num_features' as the number of input channels
+        # (conv across the time axis).
+        # Feel free to adjust kernel_size, channels, and layers.
+        self.conv1 = nn.Conv1d(in_channels=num_features, out_channels=64, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
+        
+        # We reduce the time dimension to a single value per channel
+        self.pool = nn.AdaptiveMaxPool1d(output_size=1)
+        
+        self.fc = nn.Linear(128, num_classes)
+
+    def forward(self, x):
+        # x: (batch, seq_len, num_features)
+        # Permute to (batch, num_features, seq_len) so we can apply Conv1d
+        x = x.permute(0, 2, 1)  # shape: (batch, 9, seq_len)
+        
+        x = self.conv1(x)       # shape: (batch, 64, seq_len)
+        x = nn.functional.relu(x)
+        
+        x = self.conv2(x)       # shape: (batch, 128, seq_len)
+        x = nn.functional.relu(x)
+        
+        x = self.pool(x)        # shape: (batch, 128, 1)
+        
+        # Flatten out the last dimension
+        x = x.squeeze(-1)       # shape: (batch, 128)
+        
+        out = self.fc(x)        # shape: (batch, num_classes)
+        return out
     """
     This must match the architecture used during training.
     For example:
