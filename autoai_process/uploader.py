@@ -1,5 +1,5 @@
 import os
-import uuid
+from concurrent.futures import ThreadPoolExecutor
 import requests
 
 def convert_video(input_path, output_path):
@@ -43,3 +43,23 @@ def sending_videos(label, filename, model_id, tag, csv):
     print(response.text)
     if response.status_code == 200:
         print("Video sent to RLEF sucessfully")
+
+def send_tracking_videos_in_threads(model_id = "67dc28d05e236c564cdde2e3", folder="sam2_results", max_workers=4):
+    videos = os.listdir(folder)
+
+    # Optional: define a small helper function for clarity
+    def send_video(video_filename):
+        video_path = os.path.join(folder, video_filename)
+        sending_videos(
+            label="short_hanging",
+            filename=video_path,
+            model_id=model_id,
+            tag="Tracking",
+            csv="csv"
+        )
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        executor.map(send_video, videos)
+
+    # Once we exit the 'with' block, all tasks have completed
+    print("All videos have been submitted.")
