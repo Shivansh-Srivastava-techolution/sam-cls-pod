@@ -11,6 +11,7 @@ from colorama import Fore, Style
 
 # Custom file Import
 from autoai_process import Config
+from autoai_process import uploader
 from autoai_process.auto_ai_download import csv_to_json_convert, download_files
 from autoai_process.builtin_func import auto_ai_connect
 from autoai_process.gcp_train_utils import data_preprocessing
@@ -165,6 +166,14 @@ class training_function():
         
         # for file in os.listdir(saved_model_path):
         #     os.remove(os.path.join(saved_model_path, file))
+
+        # uploading all tracking videos to AutoAI
+        for video in os.listdir("sam2_results"):
+            uploader.sending_videos(label="short_hanging", 
+                                    filename=video, 
+                                    model_id="", 
+                                    tag="Tracking",
+                                    csv="csv")
 
         Config.MODEL_STATUS = 'Training Completed'
         Config.POD_STATUS = "Available"
