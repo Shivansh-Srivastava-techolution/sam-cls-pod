@@ -1,10 +1,10 @@
 .appmodconfig
-.ipynb_checkpoints
-.vscode
+.ipynb_checkpoints/*
+.vscode/*
 
 training/samurai
 *.pyc
-__pycache__/
+__pycache__/
 
 # Ignore multimedia files
 *.mp4
