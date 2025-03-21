@@ -171,7 +171,7 @@ class training_function():
         for video in os.listdir("sam2_results"):
             uploader.sending_videos(label="short_hanging", 
                                     filename=video, 
-                                    model_id="", 
+                                    model_id="67dc28d05e236c564cdde2e3", 
                                     tag="Tracking",
                                     csv="csv")
 
