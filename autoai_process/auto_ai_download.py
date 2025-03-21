@@ -22,8 +22,6 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'faceopen_key.json'
 storage_client = storage.Client()
 bucket = storage_client.bucket(BUCKET_NAME)
 
-
-
 def sending_images(label,filename,model, tag):
     
     url = "https://autoai-backend-exjsxe2nda-uc.a.run.app/resource"
@@ -68,37 +66,47 @@ def download_blob(output_folder_path, blob_path):
     blob.download_to_filename(f"{output_file_path}")
 
 def img_annot_txt(image_annotations):
-    annotations_csv = image_annotations.replace("\'", "\"")
-    objects = json.loads(str(annotations_csv))
+    # annotations_csv = image_annotations.replace("\'", "\"")
+    # objects = json.loads(str(annotations_csv))
+    objects = image_annotations
     for object in objects:
         try:
-            label = object['selectedOptions'][1]['value']
             px = [vertex['x'] for vertex in object['vertices']]
             py = [vertex['y'] for vertex in object['vertices']]
-
-            bbox = [float(np.min(px)), float(np.min(py)), float(np.max(px)) - float(np.min(px)),
-                            float(np.max(py)) - float(np.min(py))]
             
-            return label, bbox
-        except:
+            x_min = int(np.min(px))
+            x_max = int(np.max(px))
+            y_min = int(np.min(py))
+            y_max = int(np.max(py))
+
+            bbox = [(x_min, y_min), (x_max, y_min), (x_max, y_max), (x_min, y_max)]
+            
+            print("Got bbox")
+            print(bbox)
+            return bbox
+        except Exception as e:
             print("================")
+            print(f"Failed to get img annots {e}")
             print(image_annotations)
-            print(annotations_csv)
+            print(objects)
             print("================")
-            return None, None
+            return None
+    print("BBox not annotated")
 
 def get_image_annotation(im_id):
     response = requests.get(f'https://autoai-backend-exjsxe2nda-uc.a.run.app/resource/{im_id}')
     image_annotations = response.json()['imageAnnotations']
+    # print(image_annotations)
     return image_annotations
 
 def convert_image_annots_to_json(im_id, output_folder_path, label, blob_path):
     image_annotations = get_image_annotation(im_id)
-    _, bbox = img_annot_txt(image_annotations)
-    if label and bbox:
+    bbox = img_annot_txt(image_annotations)
+    if bbox:
         filename = os.path.basename(blob_path)
         json_filename = filename.split('.')[0] + '.json'
         json_file_path =os.path.join(output_folder_path, label, json_filename)
+        print("json_file_path", json_file_path)
         with open(json_file_path, 'w') as f:
             json.dump(bbox, f)
 
