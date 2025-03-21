@@ -66,22 +66,54 @@ def download_blob(output_folder_path, blob_path):
     blob = bucket.blob('/'.join(blob_path.split('/')[3:]))
 
     blob.download_to_filename(f"{output_file_path}")
-    
-    
-        
 
+def img_annot_txt(image_annotations):
+    annotations_csv = image_annotations.replace("\'", "\"")
+    objects = json.loads(str(annotations_csv))
+    for object in objects:
+        try:
+            label = object['selectedOptions'][1]['value']
+            px = [vertex['x'] for vertex in object['vertices']]
+            py = [vertex['y'] for vertex in object['vertices']]
+
+            bbox = [float(np.min(px)), float(np.min(py)), float(np.max(px)) - float(np.min(px)),
+                            float(np.max(py)) - float(np.min(py))]
+            
+            return label, bbox
+        except:
+            print("================")
+            print(image_annotations)
+            print(annotations_csv)
+            print("================")
+            return None, None
+
+def get_image_annotation(im_id):
+    response = requests.get(f'https://autoai-backend-exjsxe2nda-uc.a.run.app/resource/{im_id}')
+    image_annotations = response.json()['imageAnnotations']
+    return image_annotations
+
+def convert_image_annots_to_json(im_id, output_folder_path, label, blob_path):
+    image_annotations = get_image_annotation(im_id)
+    _, bbox = img_annot_txt(image_annotations)
+    if label and bbox:
+        filename = os.path.basename(blob_path)
+        json_filename = filename.split('.')[0] + '.json'
+        json_file_path =os.path.join(output_folder_path, label, json_filename)
+        with open(json_file_path, 'w') as f:
+            json.dump(bbox, f)
 
 def download_files(input_csv_path, output_folder_path):
     df = pd.read_csv(input_csv_path)
     gcp_paths = df['GCStorage_file_path']
     labels = df['label']
+    image_ids = df['csv']
 
     threads = []
     start = time.time()
 
     idx = 0
 
-    for blob_path, label in zip(gcp_paths, labels):
+    for blob_path, label, im_id in zip(gcp_paths, labels, image_ids):
         label = str(label)
         # for v in range(10):
         if not os.path.exists(os.path.join(output_folder_path, label)):
@@ -95,6 +127,8 @@ def download_files(input_csv_path, output_folder_path):
         threads.append(Thread(target=download_blob,
                               # args=(os.path.join(f"{output_folder_path}", f"{label}"), f"{blob_path}")))
                                       args=(f"{os.path.join(output_folder_path, label)}", f"{blob_path}")))
+        
+        convert_image_annots_to_json(im_id, output_folder_path, label, blob_path)
 
         if idx % MAX_NUMBER_THREADS == 0:
             for th in threads:
@@ -116,7 +150,6 @@ def download_files(input_csv_path, output_folder_path):
         print(f"Data Download Status : {df.shape[0]}/{df.shape[0]}")
 
     print('Time taken : %s' % str(time.time() - start))
-
 
 def csv_to_json_convert(csv_file, json_file_name):
     input_csv = csv_file
@@ -216,6 +249,7 @@ def csv_to_json_convert(csv_file, json_file_name):
 
     json.dump(json_file, out_file, indent=6)
     out_file.close()
+
 
 
 def json_to_txt_convert(json_file, training_id, dataset_dir):
