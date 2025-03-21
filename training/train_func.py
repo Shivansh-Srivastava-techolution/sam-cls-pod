@@ -169,8 +169,9 @@ class training_function():
 
         # uploading all tracking videos to AutoAI
         for video in os.listdir("sam2_results"):
+            video_path = os.path.join("sam2_results", video)
             uploader.sending_videos(label="short_hanging", 
-                                    filename=video, 
+                                    filename=video_path, 
                                     model_id="67dc28d05e236c564cdde2e3", 
                                     tag="Tracking",
                                     csv="csv")
