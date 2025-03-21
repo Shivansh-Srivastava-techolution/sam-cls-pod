@@ -107,5 +107,6 @@ def get_update():
 if __name__ == "__main__":
     # Do a Hard Reset
     os.system("curl ifconfig.me")
+    os.system("rm -rf sam2_results/*")
     auto_ai_connect.reset()
     app.run("0.0.0.0", port=8501)

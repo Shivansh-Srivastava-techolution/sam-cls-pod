@@ -52,8 +52,8 @@ class training_function():
         download_files(self.test_csv_path, self.test_dataset_path)
 
         # creating samurai dataset
-        data_creator.main(self.dataset_path)
-        data_creator.main(self.test_dataset_path)
+        data_creator.main(self.dataset_path, "Train")
+        data_creator.main(self.test_dataset_path, "Test")
 
         Config.MODEL_STATUS = "Training"
 

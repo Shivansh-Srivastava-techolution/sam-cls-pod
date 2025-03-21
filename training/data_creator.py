@@ -43,6 +43,14 @@ def get_product_polygon(frame):
         polygons.append(polygon)
     return polygons, bboxes 
 
+def get_rlef_polygons(video_path):
+    json_path = video_path.replace('.mp4', '.json')
+    if not os.path.exists(json_path):
+        return []
+    with open(json_path, 'r') as f:
+        data = json.load(f)
+    return data
+
 def normalize_bbox(bbox, frame_width, frame_height):
     x, y, w, h = bbox
     return [
@@ -78,7 +86,7 @@ def compute_features(bbox_sequence):
     
     return features
 
-def generate_training_data(dataset_path, video_path, class_name):
+def generate_training_data(dataset_path, video_path, mode, class_name):
     cap = cv2.VideoCapture(video_path)
 
     # Get video dimensions
@@ -92,7 +100,8 @@ def generate_training_data(dataset_path, video_path, class_name):
         print(f"Failed to read first frame for video {video_path}")
         return None
 
-    _, bboxes = get_product_polygon(first_frame)
+    # _, bboxes = get_product_polygon(first_frame)
+    bboxes = get_rlef_polygons(video_path)
 
     if len(bboxes) == 0:
         print(f"No bounding boxes found in video {video_path}")
@@ -134,7 +143,7 @@ def generate_training_data(dataset_path, video_path, class_name):
     cap.release()
     return output_path
 
-def main(dataset_path):
+def main(dataset_path, mode):
     class_names = os.listdir(dataset_path)
     for clss in class_names:
         video_dir = os.path.join(dataset_path, clss)
@@ -142,7 +151,7 @@ def main(dataset_path):
         
         for video_path in video_paths:
             try:
-                generate_training_data(dataset_path, video_path, class_name=clss)
+                generate_training_data(dataset_path, video_path, mode, class_name=clss)
             except Exception as e:
                 traceback.print_exc()
                 print(f"Error processing video {video_path}: {e}")
