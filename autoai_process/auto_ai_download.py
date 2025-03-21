@@ -81,7 +81,7 @@ def img_annot_txt(image_annotations):
 
             # bbox = [(x_min, y_min), (x_max, y_min), (x_max, y_max), (x_min, y_max)]
             bbox = []
-            bbox.appned([x_min, y_min, x_max, y_max])
+            bbox.append([x_min, y_min, x_max, y_max])
             
             print("Got bbox")
             print(bbox)
