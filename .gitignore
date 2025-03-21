@@ -3,14 +3,26 @@
 .vscode
 
 training/samurai
+*.pyc
+__pycache__/
 
 # Ignore multimedia files
 *.mp4
 *.jpg
 *.jpeg
 *.png
+*.pt
 
 # Ignore JSON files
 *.json
 
 .DS_Store
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
